@@ -1,4 +1,4 @@
-package com.stackroute.service;
+package com.stackroute.LoadDatabase;
 
 import com.stackroute.domain.Movie;
 import com.stackroute.repository.MovieRepository;
@@ -7,7 +7,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 @Configuration
-public class LoadDatabase {
+public class LoadDatabaseCommandLineRunner {
     @Bean
     public CommandLineRunner initDatabase(MovieRepository repository){
         return args -> {

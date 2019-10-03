@@ -1,4 +1,4 @@
-package com.stackroute.service;
+package com.stackroute.LoadDatabase;
 
 import com.stackroute.domain.Movie;
 import com.stackroute.repository.MovieRepository;
