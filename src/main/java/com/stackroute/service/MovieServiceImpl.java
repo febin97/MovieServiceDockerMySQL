@@ -1,6 +1,8 @@
 package com.stackroute.service;
 
 import com.stackroute.domain.Movie;
+import com.stackroute.exception.MovieAlreadyExistsException;
+import com.stackroute.exception.MovieNotFoundException;
 import com.stackroute.repository.MovieRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -22,12 +24,16 @@ public class MovieServiceImpl implements MovieService {
 
     @Override
     public Movie AddNewMovie(Movie newMovie) {
-        return movieRepository.save(newMovie);
+        return (Movie) movieRepository.findById(newMovie.getMovieId())
+                .map(movie -> {throw new MovieAlreadyExistsException("Already Exists");
+                }).orElseGet(()->{
+                   return movieRepository.save(newMovie);
+                });
     }
 
     @Override
     public Movie GetParticularMovie(int movieId) {
-        return movieRepository.findById(movieId).orElseThrow(()->new RuntimeException());
+        return movieRepository.findById(movieId).orElseThrow(()->new MovieNotFoundException("Movie Not Found"));
     }
 
     @Override
@@ -47,18 +53,25 @@ public class MovieServiceImpl implements MovieService {
                     return movieRepository.save(movie);
                 })
                 .orElseGet(()->{
-                    newMovie.setMovieId(movieId);
-                    return newMovie;
+                    throw new MovieNotFoundException("Movie Not Found For Updation");
                 });
     }
 
     @Override
     public void DeleteMovie(int movieId) {
-        movieRepository.deleteById(movieId);
+        try{
+            movieRepository.deleteById(movieId);
+        }catch (Exception e ){
+            throw new MovieNotFoundException("Movie Not Found for Deletion");
+        }
     }
 
    @Override
     public List<Movie> GetMovieByTitle(String movieTitle) {
-        return movieRepository.getMovieWithTitle(movieTitle);
+
+           if(movieRepository.getMovieWithTitle(movieTitle).isEmpty()){
+                throw new MovieNotFoundException("Movie with given Name not Found!");
+           }
+           return movieRepository.getMovieWithTitle(movieTitle);
     }
 }
