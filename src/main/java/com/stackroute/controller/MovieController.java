@@ -3,6 +3,7 @@ package com.stackroute.controller;
 import com.stackroute.domain.Movie;
 import com.stackroute.service.MovieService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
@@ -11,10 +12,9 @@ import java.util.List;
 @RestController
 @RequestMapping("/api/movies")
 public class MovieController {
-    private final MovieService movieService;
-    public MovieController(MovieService movieService) {
-        this.movieService = movieService;
-    }
+    @Autowired
+    @Qualifier("movieservice")
+    private  MovieService movieService;
     @GetMapping("/")
     public List<Movie> GetAllMovies(){
         return movieService.GetAllMovies();
