@@ -28,11 +28,16 @@ public class MovieServiceImpl implements MovieService {
 
     @Override
     public Movie AddNewMovie(Movie newMovie) {
-        return (Movie) movieRepository.findById(newMovie.getMovieId())
-                .map(movie -> {throw new MovieAlreadyExistsException("Already Exists");
-                }).orElseGet(()->{
-                   return movieRepository.save(newMovie);
-                });
+        try {
+            return (Movie) movieRepository.findById(newMovie.getMovieId())
+                    .map(movie -> {
+                        throw new MovieAlreadyExistsException("Already Exists");
+                    }).orElseGet(() -> {
+                        return movieRepository.save(newMovie);
+                    });
+        }catch (NullPointerException e){
+            throw new MovieAlreadyExistsException("");
+        }
     }
 
     @Override
